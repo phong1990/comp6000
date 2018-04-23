@@ -1,7 +1,6 @@
 package Servlets;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
@@ -14,10 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.tomcat.dbcp.dbcp2.Utils;
 
 import Models.Comment;
 import Models.Submission;
