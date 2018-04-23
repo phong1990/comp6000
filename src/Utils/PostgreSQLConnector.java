@@ -1,5 +1,8 @@
 package Utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,6 +17,9 @@ import javax.activation.DataSource;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import org.postgresql.largeobject.LargeObject;
+import org.postgresql.largeobject.LargeObjectManager;
 
 public class PostgreSQLConnector {
 
@@ -246,6 +252,66 @@ public class PostgreSQLConnector {
 		return id; // only return the first
 	}
 
+	public void insertOID(String table, FileInputStream fis, String idFieldName, String id) throws SQLException, IOException{
+		// All LargeObject API calls must be within a transaction block
+		mConnect.setAutoCommit(false);
+
+		// Get the Large Object Manager to perform operations with
+		LargeObjectManager lobj = ((org.postgresql.PGConnection)mConnect).getLargeObjectAPI();
+
+		// Create a new large object
+		int oid = lobj.create(LargeObjectManager.READ | LargeObjectManager.WRITE);
+
+		// Open the large object for writing
+		LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
+
+		// Now open the file
+
+		// Copy the data from the file to the large object
+		byte buf[] = new byte[2048];
+		int s, tl = 0;
+		while ((s = fis.read(buf, 0, 2048)) > 0) {
+		    obj.write(buf, 0, s);
+		    tl += s;
+		}
+
+		// Close the large object
+		obj.close();
+
+		// Now insert the row into imageslo
+		PreparedStatement ps = mConnect.prepareStatement("UPDATE "+table+" SET "+oid+" = ? WHERE "+idFieldName+" = ?");
+		ps.setInt(1, oid);
+		ps.setString(2, id);
+		ps.executeUpdate();
+		ps.close();
+	}
+	
+	public ResultSet retrievingOIDFile(String table,String oid, String condition) throws SQLException{
+		// All LargeObject API calls must be within a transaction block
+		mConnect.setAutoCommit(false);
+
+		// Get the Large Object Manager to perform operations with
+		LargeObjectManager lobj = ((org.postgresql.PGConnection)mConnect).getLargeObjectAPI();
+		
+		ResultSet rs = mStatement.executeQuery("SELECT "+oid+" FROM "+table+" WHERE "+condition);
+//		if (rs != null) {
+//		    while (rs.next()) {
+//		        // Open the large object for reading
+//		        int oid = rs.getInt(1);
+//		        LargeObject obj = lobj.open(oid, LargeObjectManager.READ);
+//
+//		        // Read the data
+//		        byte buf[] = new byte[obj.size()];
+//		        obj.read(buf, 0, obj.size());
+//		        // Do something with the data read here
+//
+//		        // Close the object
+//		        obj.close();
+//		    }
+//		    rs.close();
+//		}
+		return rs;
+	}
 	// you need to close all three to make sure
 	public void close() throws SQLException {
 		if (mStatement != null) {
