@@ -111,13 +111,13 @@ public class SubmissionServlet extends HttpServlet {
 			} else {
 
 				out.print("<h3>Please login first</h3>");
-				request.getRequestDispatcher("login.html").include(request,
+				request.getRequestDispatcher("login.jsp").include(request,
 						response);
 			}
 
 		} else {
 			out.print("<h3>Please login first</h3>");
-			request.getRequestDispatcher("login.html").include(request,
+			request.getRequestDispatcher("login.jsp").include(request,
 					response);
 		}
 	}
