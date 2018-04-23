@@ -62,15 +62,10 @@
 			<tr>
 				<td></td>
 				<td><span id="msg"> </span> <%
-			 	if (request.getParameter("a") != null) {
+			 	if (request.getParameter("message") != null) {
 			
-			  		out.println("Username already exists..! Please login to continue.!");
-			  	}
-			
-			  	if (request.getParameter("b") != null) {
-			
-			 		out.println("You must login to continue.!");
-			 	}
+			  		out.println(request.getParameter("message"));
+			  	}			
 			 %></td>
 
 			</tr>

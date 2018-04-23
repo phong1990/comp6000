@@ -50,15 +50,56 @@ input:focus {
 	border: 1px solid #000000;
 }
 
-#yourBtn
-{
-   font-family: "Calibri", cursive, sans-serif;
-   font-size: 18px;
-    width: 150px;
-   padding: 6px;
-   -webkit-border-radius: 5px;
-   -moz-border-radius: 5px;
-   border: 1px dashed #BBB; 
-   background-color: #DDD;
-   cursor:pointer;
+#yourBtn {
+	font-family: "Calibri", cursive, sans-serif;
+	font-size: 18px;
+	width: 150px;
+	padding: 6px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border: 1px dashed #BBB;
+	background-color: #DDD;
+	cursor: pointer;
+}
+
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+.left {
+	height: 80px;
+	background: #354778;
+	padding: 20px;
+	color: white;
+	width: 1410px;
+	text-align: center;
+	padding-right: 60px;
+}
+
+#heading {
+	float: left;
+}
+
+.footer {
+	background: #354778;
+	height: 40px;
+	color: white;
+	text-align: center;
+	padding: 10px;
+	width: auto;
+	position: absolute;
+	bottom: 0;
+	height: 40px;
+}
+
+#alignment {
+	float: right;
+	padding-top: 20px;
+	padding-right: 10px;
+}
+
+#rightalignment {
+	float: right;
+	padding-top: 20px;
 }

@@ -22,7 +22,7 @@
 	</header>
 
 	<div>
-		<form name="loginform" method="POST" action="loginprocess.jsp">
+		<form name="loginform" method="POST" action="LoginServlet">
 			<table cellpadding="5" cellspacing="10" align="center" width="600px">
 				<tr>
 					<td colspan="2" align="center"><h3>Login</h3></td>
@@ -45,8 +45,8 @@
 					<td></td>
 					<td>
 						<%
-							if (request.getParameter("c") != null) {
-								out.println("Username or password is incorrect.!");
+							if (request.getParameter("message") != null) {
+								out.println(request.getParameter("message"));
 							}
 						%>
 					</td>
