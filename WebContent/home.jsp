@@ -16,7 +16,7 @@
 	break;
 			case User.STUDENT:
 %>
-<%@ include file="parts/students.jsp"%>
+<%@ include file="parts/student.jsp"%>
 <%
 	break;
 			case User.TEACHER:
