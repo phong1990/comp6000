@@ -68,11 +68,11 @@ input:focus {
 }
 
 .left {
-	height: 80px;
+	height: 110px;
 	background: #354778;
 	padding: 20px;
 	color: white;
-	width: 1410px;
+	width: 100%;
 	text-align: center;
 	padding-right: 60px;
 }
@@ -87,7 +87,7 @@ input:focus {
 	color: white;
 	text-align: center;
 	padding: 10px;
-	width: auto;
+	width: 100%;
 	position: absolute;
 	bottom: 0;
 	height: 40px;
