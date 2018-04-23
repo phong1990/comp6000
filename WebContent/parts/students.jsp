@@ -1,50 +1,52 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@page import="Models.User"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>  MAGIC (Mentoring Alabama Girls in Computing)  </title>
-<link rel="stylesheet" href="style2.css" type="text/css"/>
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+<body>
+	<div class="left">
+		<div id="heading">
+			<table>
+				<tr>
+					<td><a href="home.jsp"><img src="img/images.png"
+							style="width: 60px; height: 80px; border-top: auto"
+							title="Home Page" align="left"></a></td>
+					<td><h1>MAGIC (Mentoring Alabama Girls in Computing)</h1></td>
+				</tr>
+			</table>
+			<div style="float: right; position: absolute; top: 0; right: 0;">
+				<%
+					if (session != null) {
+						User users = (User) session.getAttribute("user");
+						if (users != null) {
+							out.println("Welcome " + users.getfirstName() + "!");
+						}
+					}
+				%>
+				<br>
+				<br>
+				<div style="float: right;">
+					<a href="LogoutServlet" class="top">Logout</a>
+				</div>
+			</div>
+			<table>
+				<tr>
+					<td><div style="float: right;">
+							<a href="gridview.jsp" class="top">Browse Works</a>
+						</div>
+						<div style="float: right;">
+							<a href="Submission.jsp" class="top">Submit your work</a>
+						</div></td>
+				</tr>
+			</table>
 
 
-    <div class="left">
-   <div id="heading">
-     <img src="images.png" height="60px" width="80px" align="left" style="border-top:auto">
-    
-      <h1> MAGIC (Mentoring Alabama Girls in Computing) </h1>
-    </div>
-    
- <h2> 
- <% String userName=request.getParameter("username");
-     out.println("Welcome "+userName);
-  %>
-     
-</h2>
-    
-      <input type="submit" value="Logout" style="width: 70px;font-size: 16px">
-     
- <div id="alignment">
-    <form action="gridview.jsp">
-     <input type="submit" value="Grid View" style="width: 120px;font-size: 16px">
-        </form>
-     </div>
-      <div id="rightalignment">
-     <form action="submit.jsp">
-     <input type="submit" value="Submit" style="width: 120px;font-size: 16px">
-        
-     </form>
-         
-     </div>
-     
-     </div>
-        
-     </head>
-    <body>
-       
+		</div>
+
+	</div>
 </body>
 </html>
-    
-    
     
     

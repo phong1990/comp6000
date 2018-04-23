@@ -18,15 +18,12 @@
 			</table>
 			<div style="float: right; position: absolute; top: 0; right: 0;">
 				<%
-					if (session != null) {
-						User user = (User) session.getAttribute("user");
-						if (user != null) {
-							out.println("Welcome " + user.getfirstName() + "!");
-						}
+					User usera = (User) session.getAttribute("user");
+					if (usera != null) {
+						out.println("Welcome " + usera.getfirstName() + "!");
 					}
 				%>
-				<br>
-				<br>
+				<br> <br>
 				<div style="float: right;">
 					<a href="LogoutServlet" class="top">Logout</a>
 				</div>
