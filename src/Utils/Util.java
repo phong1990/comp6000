@@ -1,10 +1,12 @@
 package Utils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +15,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+
+import org.apache.commons.codec.binary.Base64;
+
+import Models.Submission;
 
 public class Util {
 	public static List<String> listFilesForFolder(final String folderName)
@@ -42,6 +48,19 @@ public class Util {
 	        }
 	    }
 	}
+	public static String getImageForBrowser(int submissionID, PostgresDB db, Submission sub)
+			throws SQLException, UnsupportedEncodingException {
+		byte[] thumbnail = db.retrievingOIDFile(
+				sub.getThumbnailOID(), submissionID);
+		byte[] encodeBase64 = Base64.encodeBase64(thumbnail);
+		String base64Encoded = new String(encodeBase64, "UTF-8");
+		StringBuilder imageString = new StringBuilder();
+		imageString.append("data:image/png;base64,");
+		imageString.append(base64Encoded);
+		String image = imageString.toString();
+		return image;
+	}
+
 	//Fisher–Yates shuffle array
 	public static void shuffleArray(String[] array)
 	{

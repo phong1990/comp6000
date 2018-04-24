@@ -1,0 +1,105 @@
+body {
+	font-family: "Calibri", cursive, sans-serif;
+	width: 100%;
+	margin: 0px;
+	overflow: hidden;
+}
+
+header {
+	font-family: "Calibri", cursive, sans-serif;
+	width: 100%;
+	background-color: #03244d;
+	padding: 20px;
+	height: 40px;
+}
+
+a:link[class|=top], a:visited[class|=top] {
+	background-color: #f44336;
+	color: white;
+	padding: 10px 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+}
+
+a:hover[class|=top], a:active[class|=top] {
+	background-color: crimson;
+}
+
+input.txt {
+	font-family: "Calibri", cursive, sans-serif;
+	height: 25px;
+	width: 170px;
+	border: 1px solid #DDD;
+	color: #666666;
+	font-size: 17px;
+	font-smooth: always;
+	outline: none;
+	font-weight: 100;
+}
+
+input:hover {
+	border: 1px solid #333333;
+}
+
+input:active {
+	border: 1px solid #666666;
+}
+
+input:focus {
+	border: 1px solid #000000;
+}
+
+#yourBtn {
+	font-family: "Calibri", cursive, sans-serif;
+	font-size: 18px;
+	width: 150px;
+	padding: 6px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border: 1px dashed #BBB;
+	background-color: #DDD;
+	cursor: pointer;
+}
+
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+.left {
+	height: 110px;
+	background: #354778;
+	padding: 20px;
+	color: white;
+	width: 100%;
+	text-align: center;
+	padding-right: 60px;
+}
+
+#heading {
+	float: left;
+}
+
+.footer {
+	background: #354778;
+	height: 40px;
+	color: white;
+	text-align: center;
+	padding: 10px;
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	height: 40px;
+}
+
+#alignment {
+	float: right;
+	padding-top: 20px;
+	padding-right: 10px;
+}
+
+#rightalignment {
+	float: right;
+	padding-top: 20px;
+}

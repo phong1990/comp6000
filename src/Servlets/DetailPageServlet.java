@@ -1,8 +1,8 @@
 package Servlets;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -14,10 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.tomcat.dbcp.dbcp2.Utils;
 
 import Models.Comment;
 import Models.Submission;
@@ -78,14 +76,8 @@ public class DetailPageServlet extends HttpServlet {
 							.parseInt(request.getParameter("submissionID"));
 					PostgresDB db = PostgresDB.getInstance();
 					Submission sub = db.getSingleSubmission(submissionID);
-					byte[] thumbnail = db.retrievingOIDFile(
-							sub.getThumbnailOID(), submissionID);
-					byte[] encodeBase64 = Base64.encodeBase64(thumbnail);
-					String base64Encoded = new String(encodeBase64, "UTF-8");
-					StringBuilder imageString = new StringBuilder();
-					imageString.append("data:image/png;base64,");
-					imageString.append(base64Encoded);
-					String image = imageString.toString();
+					List<Submission> sublist = db.getAllSubmissions();
+					String image = Util.getImageForBrowser(submissionID, db, sub);
 					float avgrating = (float) Util.round(
 							db.getAVGRatingForASubmission(submissionID), 1);
 					int user_id = user.getDBID();
@@ -123,16 +115,17 @@ public class DetailPageServlet extends HttpServlet {
 			} else {
 
 				out.print("<h3>Please login first</h3>");
-				request.getRequestDispatcher("login.html").include(request,
+				request.getRequestDispatcher("login.jsp").include(request,
 						response);
 			}
 
 		} else {
 			out.print("<h3>Please login first</h3>");
-			request.getRequestDispatcher("login.html").include(request,
+			request.getRequestDispatcher("login.jsp").include(request,
 					response);
 		}
 	}
+
 
 	private String getTeacherForm(int submissionID, PostgresDB db, User user)
 			throws SQLException {

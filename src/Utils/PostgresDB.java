@@ -24,7 +24,7 @@ import Models.User;
 public class PostgresDB {
 	public static final String DBLOGIN = "postgres";
 	public static final String DBPASSWORD = "phdcs2014";
-	public static final String MAINDB = "CS6000";
+	public static final String MAINDB = "cs6000";
 
 	public static final String CREATE_TABLE_USERS = "CREATE TABLE users("
 			+ "   ID SERIAL PRIMARY KEY NOT NULL,"
@@ -53,7 +53,6 @@ public class PostgresDB {
 
 	public static final String DAYS_TABLE = "days";
 	private Connection mConnect = null;
-	private Statement mStatement = null;
 
 	private static PostgresDB instance = null;
 
@@ -73,7 +72,7 @@ public class PostgresDB {
 		tables.add(CREATE_TABLE_COMMENTS);
 		tables.add(CREATE_TABLE_RATINGS);
 		try {
-			tryCreatingDatabase(MAINDB, DBLOGIN, DBPASSWORD, tables);
+			tryCreatingDatabase(MAINDB, DBLOGIN, DBPASSWORD);
 		} catch (ClassNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -86,14 +85,28 @@ public class PostgresDB {
 						null, ex);
 			}
 			mConnect = DriverManager.getConnection(url, DBLOGIN, DBPASSWORD);
+			tryCreatingTables(tables);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
+	void tryCreatingTables(List<String> tables){
+		System.out.println("Creating tables");
+		for(String sqlCreateTable : tables){
+			try {
+				Statement statement = mConnect.createStatement();
+				statement.execute(sqlCreateTable);
+				System.out.println(sqlCreateTable);
+				statement.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
+		}
+	}
 	public void tryCreatingDatabase(String database, String user,
-			String password, List<String> tables)
+			String password )
 			throws ClassNotFoundException {
 		Connection connection = null;
 		Statement statement = null;
@@ -105,16 +118,7 @@ public class PostgresDB {
 			String sql = "CREATE DATABASE " + database;
 			statement.executeUpdate(sql);
 			System.out.println("Database created!");
-			System.out.println("Creating tables");
-			for (String sqlCreateTable : tables) {
-				try {
-					statement.execute(sqlCreateTable);
-					System.out.println(sqlCreateTable);
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					// e.printStackTrace();
-				}
-			}
+			statement.close();
 		} catch (SQLException sqlException) {
 			if (sqlException.getErrorCode() == 1007) {
 				// Database already exists error
@@ -168,17 +172,19 @@ public class PostgresDB {
 
 	// null means not correct username or password
 	public User login(String username, String password) throws SQLException {
-		final String queryLogin = "SELECT username,firstname,lastname,role from users WHERE username= ? AND password_hash = ?";
+		final String queryLogin = "SELECT username,firstname,lastname,role,password_hash from users WHERE username= ? ";
 		PreparedStatement ps = mConnect.prepareStatement(queryLogin);
 		ps.setString(1, username);
-		ps.setString(2, password);
 		final ResultSet resultSet = ps.executeQuery();
 		User user = null;
 		if (resultSet.next()) {
 			String fname = resultSet.getString("fname");
 			String lname = resultSet.getString("lname");
 			int dbid = resultSet.getInt("user_id");
-			user = new User(dbid, fname, lname);
+			String hash = resultSet.getString("password_hash");
+			PasswordAuthentication passAu = new PasswordAuthentication();
+			if (passAu.authenticate(password, hash))
+				user = new User(dbid, fname, lname);
 		}
 		ps.close();
 		resultSet.close();
@@ -195,7 +201,7 @@ public class PostgresDB {
 	}
 
 	// null if wrong dbID
-	public String getRole(int DBID) throws SQLException{
+	public String getRole(int DBID) throws SQLException {
 		final String queryLogin = "SELECT role from users WHERE ID= ?";
 		PreparedStatement ps = mConnect.prepareStatement(queryLogin);
 		ps.setInt(1, DBID);
@@ -208,6 +214,7 @@ public class PostgresDB {
 		resultSet.close();
 		return role;
 	}
+
 	public int addSubmission(int author_id, String description,
 			InputStream fis_file, InputStream fis_thumbnail)
 			throws SQLException, IOException {
@@ -223,8 +230,7 @@ public class PostgresDB {
 		return row;
 	}
 
-	private long getOID(InputStream fis_file)
-			throws SQLException, IOException {
+	private long getOID(InputStream fis_file) throws SQLException, IOException {
 		// Get the Large Object Manager to perform operations with
 		LargeObjectManager lobj = ((org.postgresql.PGConnection) mConnect)
 				.getLargeObjectAPI();
@@ -386,7 +392,8 @@ public class PostgresDB {
 		return commentList;
 	}
 
-	public int checkCurrentRatingForASubmission(int submissionDBID, int userDBID) throws SQLException{
+	public int checkCurrentRatingForASubmission(int submissionDBID,
+			int userDBID) throws SQLException {
 		final String queryCheck = "SELECT rating from ratings WHERE user_id= ? AND submission_id=?";
 		PreparedStatement ps = mConnect.prepareStatement(queryCheck);
 		ps.setInt(1, userDBID);
@@ -400,6 +407,7 @@ public class PostgresDB {
 		resultSet.close();
 		return rating;
 	}
+
 	public void addRatingForSubmission(int submissionDBID, int userDBID,
 			int rating) throws SQLException {
 		// check if rating exist

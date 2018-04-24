@@ -8,9 +8,9 @@ public class User {
 	protected String firstName;
 	protected String lastName;
 	protected int DBID;
-	public static String TEACHER = "teacher";
-	public static String STUDENT = "student";
-	public static String ADMIN = "admin";
+	public static final String TEACHER = "teacher";
+	public static final String STUDENT = "student";
+	public static final String ADMIN = "admin";
 
 	public int getDBID() {
 		return DBID;

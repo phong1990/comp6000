@@ -57,7 +57,7 @@ public class GraderServlet extends HttpServlet {
 									submissionID, grade);
 
 							request.setAttribute("message",
-									"Grace changed successfully!");
+									"Grade changed successfully!");
 							request.setAttribute("submissionID", submissionID);
 						} catch (SQLException e) {
 							// TODO Auto-generated catch block
@@ -82,13 +82,13 @@ public class GraderServlet extends HttpServlet {
 			} else {
 
 				out.print("<h3>Please login first</h3>");
-				request.getRequestDispatcher("login.html").include(request,
+				request.getRequestDispatcher("login.jsp").include(request,
 						response);
 			}
 
 		} else {
 			out.print("<h3>Please login first</h3>");
-			request.getRequestDispatcher("login.html").include(request,
+			request.getRequestDispatcher("login.jsp").include(request,
 					response);
 		}
 	}
