@@ -172,16 +172,16 @@ public class PostgresDB {
 
 	// null means not correct username or password
 	public User login(String username, String password) throws SQLException {
-		final String queryLogin = "SELECT username,firstname,lastname,role,password_hash from users WHERE username= ? ";
+		final String queryLogin = "SELECT ID,firstname,lastname,role,pashword_hash from users WHERE username= ? ";
 		PreparedStatement ps = mConnect.prepareStatement(queryLogin);
 		ps.setString(1, username);
 		final ResultSet resultSet = ps.executeQuery();
 		User user = null;
 		if (resultSet.next()) {
-			String fname = resultSet.getString("fname");
-			String lname = resultSet.getString("lname");
-			int dbid = resultSet.getInt("user_id");
-			String hash = resultSet.getString("password_hash");
+			String fname = resultSet.getString("firstname");
+			String lname = resultSet.getString("lastname");
+			int dbid = resultSet.getInt("ID");
+			String hash = resultSet.getString("pashword_hash");
 			PasswordAuthentication passAu = new PasswordAuthentication();
 			if (passAu.authenticate(password, hash))
 				user = new User(dbid, fname, lname);
