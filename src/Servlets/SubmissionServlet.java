@@ -55,8 +55,6 @@ public class SubmissionServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 
-		response.setContentType("text/html;charset=UTF-8");
-		PrintWriter out = response.getWriter();
 		/* TODO output your page here. You may use following sample code. */
 
 		HttpSession session = request.getSession(false);
@@ -89,34 +87,45 @@ public class SubmissionServlet extends HttpServlet {
 						String message = "";
 						if (row > 0) {
 							message = "File uploaded and saved into database";
+							System.out.println(message);
+							request.setAttribute("message", message);
+							request
+									.getRequestDispatcher("detailPage.jsp");
+						}else{
+							message = "Something is wrong!";
+							System.out.println(message);
+							request.setAttribute("message", message);
+							request
+									.getRequestDispatcher("Submission.jsp");
 						}
-						request.setAttribute("message", message);
-						RequestDispatcher view = request
-								.getRequestDispatcher("detailPage.jsp");
-						view.forward(request, response);
+
 					} else {
-						out.print(
-								"<h3>Need to choose both thumbnail and file</h3>");
-						RequestDispatcher view = request
+						String message = "Need to choose both thumbnail and file";
+						System.out.println(message);
+						request.setAttribute("message", message);
+						request
 								.getRequestDispatcher("Submission.jsp");
-						view.forward(request, response);
 					}
 				} catch (SQLException e) {
-					out.print(
-							"<h3>Something is wrong!</h3>");
-					RequestDispatcher view = request
+					String message = "Something is wrong!";
+					System.out.println(message);
+					request.setAttribute("message", message);
+					 request
 							.getRequestDispatcher("Submission.jsp");
-					view.forward(request, response);
 				}
 			} else {
 
-				out.print("<h3>Please login first</h3>");
+				String message = "Please login first!";
+				System.out.println(message);
+				request.setAttribute("message", message);
 				request.getRequestDispatcher("login.jsp").include(request,
 						response);
 			}
 
 		} else {
-			out.print("<h3>Please login first</h3>");
+			String message = "Please login first!";
+			System.out.println(message);
+			request.setAttribute("message", message);
 			request.getRequestDispatcher("login.jsp").include(request,
 					response);
 		}

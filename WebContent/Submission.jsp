@@ -3,6 +3,40 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<%
+	if (session != null) {
+		User user1 = (User) session.getAttribute("user");
+		if (user1 != null) {
+			switch (user1.getRole()) {
+			case User.ADMIN:
+%>
+<%@ include file="parts/admin.jsp"%>
+<%
+	break;
+			case User.STUDENT:
+%>
+<%@ include file="parts/student.jsp"%>
+<%
+	break;
+			case User.TEACHER:
+%>
+<%@ include file="parts/teacher.jsp"%>
+<%
+	break;
+			}
+
+		} else {
+%>
+<%@ include file="parts/header1.html"%>
+<%
+	}
+	} else {
+%>
+
+<%@ include file="parts/header1.html"%>
+<%
+	}
+%>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Submitting your work here</title>
 </head>
@@ -28,5 +62,6 @@
 			</tr>
 		</table>
 	</form>
+	<%@ include file="parts/footer.html"%>
 </body>
 </html>
