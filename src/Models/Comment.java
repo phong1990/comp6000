@@ -1,8 +1,7 @@
 package Models;
 
-import java.util.Comparator;
 
-public class Comment implements Comparator<Comment> {
+public class Comment implements Comparable<Comment> {
 	private long time;
 	private String text;
 	private String fname;
@@ -27,8 +26,8 @@ public class Comment implements Comparator<Comment> {
 	}
 
 	@Override
-	public int compare(Comment o1, Comment o2) {
+	public int compareTo(Comment arg0) {
 		// TODO Auto-generated method stub
-		return Long.compare(o1.time, o2.time);
+		return Long.compare(this.time, arg0.time);
 	}
 }

@@ -41,8 +41,8 @@ public class SubmissionServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doPost(request, response);
 	}
@@ -51,8 +51,8 @@ public class SubmissionServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 
 		/* TODO output your page here. You may use following sample code. */
@@ -79,55 +79,44 @@ public class SubmissionServlet extends HttpServlet {
 						// obtains input stream of the upload file
 						inputStream_thumbnail = thumbnailPart.getInputStream();
 						inputStream_file = filePart.getInputStream();
-						int row;
-						row = PostgresDB.getInstance().addSubmission(
-								user.getDBID(), description, inputStream_file,
-								inputStream_thumbnail);
+						int submissionID = PostgresDB.getInstance().addSubmission(user.getDBID(), description,
+								inputStream_file, inputStream_thumbnail);
 
 						String message = "";
-						if (row > 0) {
+						if (submissionID > 0) {
 							message = "File uploaded and saved into database";
 							System.out.println(message);
+							request.setAttribute("submissionID", submissionID);
 							request.setAttribute("message", message);
-							request
-									.getRequestDispatcher("detailPage.jsp");
-						}else{
+							RequestDispatcher rd= request.getRequestDispatcher("DetailPageServlet");
+							rd.forward(request, response);
+						} else {
 							message = "Something is wrong!";
-							System.out.println(message);
 							request.setAttribute("message", message);
-							request
-									.getRequestDispatcher("Submission.jsp");
+			                request.getRequestDispatcher("Submission.jsp").include(request, response);
 						}
 
 					} else {
 						String message = "Need to choose both thumbnail and file";
-						System.out.println(message);
 						request.setAttribute("message", message);
-						request
-								.getRequestDispatcher("Submission.jsp");
+		                request.getRequestDispatcher("Submission.jsp").include(request, response);
 					}
 				} catch (SQLException e) {
-					String message = "Something is wrong!";
-					System.out.println(message);
+					String message = "Something is wrong within the DB!";
 					request.setAttribute("message", message);
-					 request
-							.getRequestDispatcher("Submission.jsp");
+	                request.getRequestDispatcher("Submission.jsp").include(request, response);
 				}
 			} else {
 
 				String message = "Please login first!";
-				System.out.println(message);
 				request.setAttribute("message", message);
-				request.getRequestDispatcher("login.jsp").include(request,
-						response);
+				request.getRequestDispatcher("login.jsp").include(request, response);
 			}
 
 		} else {
 			String message = "Please login first!";
-			System.out.println(message);
 			request.setAttribute("message", message);
-			request.getRequestDispatcher("login.jsp").include(request,
-					response);
+			request.getRequestDispatcher("login.jsp").include(request, response);
 		}
 	}
 

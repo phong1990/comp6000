@@ -4,6 +4,40 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<%
+	if (session != null) {
+		User user1 = (User) session.getAttribute("user");
+		if (user1 != null) {
+			switch (user1.getRole()) {
+			case User.ADMIN:
+%>
+<%@ include file="parts/admin.jsp"%>
+<%
+	break;
+			case User.STUDENT:
+%>
+<%@ include file="parts/student.jsp"%>
+<%
+	break;
+			case User.TEACHER:
+%>
+<%@ include file="parts/teacher.jsp"%>
+<%
+	break;
+			}
+
+		} else {
+%>
+<%@ include file="parts/header1.html"%>
+<%
+	}
+	} else {
+%>
+
+<%@ include file="parts/header1.html"%>
+<%
+	}
+%>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
 </head>
@@ -11,7 +45,7 @@
 	<h3>${message}</h3>
 	<table style="width: 60%">
 		<tr>
-			<td colspan="3"><img src="${thumbnail}" alt="No image"></td>
+			<td colspan="3"><img src="${thumbnail}" alt="No image" height="200" width="200"></td>
 		</tr>
 		<tr>
 			<td><h4>Description:</h4></td>
@@ -39,8 +73,10 @@
 	<form method="post" action="CommentServlet">
 		<table>
 			<tr>
-				<td><h4>Leave your comment here:<input type="hidden" name="submissionid"
-					value="${subid}" /></h4></td>
+				<td><h4>
+						Leave your comment here:<input type="hidden" name="submissionid"
+							value="${subid}" />
+					</h4></td>
 				<td></td>
 				<td></td>
 			</tr>
@@ -64,10 +100,11 @@
 		<c:forEach items="${commentList}" var="comment">
 			<tr>
 				<td colspan="3">"${comment.text}"<br>
-				<h5>${comment.fname}</h5></td>
+					<h5>${comment.fname}</h5></td>
 			</tr>
-			<hr/>
+			<hr />
 		</c:forEach>
 	</table>
+	<%@ include file="parts/footer.html"%>
 </body>
 </html>
