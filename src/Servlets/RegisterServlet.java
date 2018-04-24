@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import Models.User;
 import Utils.PasswordAuthentication;
 import Utils.PostgresDB;
 
@@ -46,7 +47,7 @@ public class RegisterServlet extends HttpServlet {
 			// store the hash, not the password
 			PasswordAuthentication passwordAuthentication = new PasswordAuthentication();
 			if (db.registerUser(fname, lname, username,
-					passwordAuthentication.hash(password))) {
+					passwordAuthentication.hash(password), User.STUDENT)) {
 				request.setAttribute("message", "registered!");
 				request.getRequestDispatcher("login.jsp").include(request,
 						response);

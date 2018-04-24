@@ -26,21 +26,29 @@ public class PostgresDB {
 	public static final String DBPASSWORD = "phdcs2014";
 	public static final String MAINDB = "cs6000";
 
-	public static final String CREATE_TABLE_USERS = "CREATE TABLE users(" + "   ID SERIAL PRIMARY KEY NOT NULL,"
-			+ "   firstname		 TEXT NOT NULL," + "   lastname          TEXT NOT NULL,"
-			+ "   username          TEXT NOT NULL," + "   pashword_hash     TEXT NOT NULL,"
+	public static final String CREATE_TABLE_USERS = "CREATE TABLE users("
+			+ "   ID SERIAL PRIMARY KEY NOT NULL,"
+			+ "   firstname		 TEXT NOT NULL,"
+			+ "   lastname          TEXT NOT NULL,"
+			+ "   username          TEXT NOT NULL,"
+			+ "   pashword_hash     TEXT NOT NULL,"
 			+ "   role              TEXT NOT NULL" + ")";
 	public static final String CREATE_TABLE_SUBMISSIONS = "CREATE TABLE submissions("
-			+ "   ID SERIAL PRIMARY KEY NOT NULL," + "   author_id     INT references users(ID)," + "   file      oid,"
-			+ "   description   TEXT," + "   thumbnail     oid," + "   grade         INT," + "   delete        boolean"
-			+ ");";
+			+ "   ID SERIAL PRIMARY KEY NOT NULL,"
+			+ "   author_id     INT references users(ID)," + "   file      oid,"
+			+ "   description   TEXT," + "   thumbnail     oid,"
+			+ "   grade         INT," + "   delete        boolean" + ");";
 
-	public static final String CREATE_TABLE_COMMENTS = "CREATE TABLE comments(" + "   ID SERIAL PRIMARY KEY NOT NULL,"
-			+ "   user_id     INT references users(ID)," + "   submission_id     INT references submissions(ID),"
+	public static final String CREATE_TABLE_COMMENTS = "CREATE TABLE comments("
+			+ "   ID SERIAL PRIMARY KEY NOT NULL,"
+			+ "   user_id     INT references users(ID),"
+			+ "   submission_id     INT references submissions(ID),"
 			+ "   text        TEXT," + "   time        BIGINT" + ")";
 
-	public static final String CREATE_TABLE_RATINGS = "CREATE TABLE ratings(" + "   ID SERIAL PRIMARY KEY NOT NULL,"
-			+ "   user_id     INT references users(ID)," + "   submission_id     INT references submissions(ID),"
+	public static final String CREATE_TABLE_RATINGS = "CREATE TABLE ratings("
+			+ "   ID SERIAL PRIMARY KEY NOT NULL,"
+			+ "   user_id     INT references users(ID),"
+			+ "   submission_id     INT references submissions(ID),"
 			+ "   rating      INT)";
 
 	public static final String DAYS_TABLE = "days";
@@ -73,10 +81,12 @@ public class PostgresDB {
 			try {
 				Class.forName("org.postgresql.Driver");
 			} catch (ClassNotFoundException ex) {
-				Logger.getLogger(PostgresDB.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(PostgresDB.class.getName()).log(Level.SEVERE,
+						null, ex);
 			}
 			mConnect = DriverManager.getConnection(url, DBLOGIN, DBPASSWORD);
 			tryCreatingTables(tables);
+			tryAddingDefaultUsers();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -97,12 +107,27 @@ public class PostgresDB {
 		}
 	}
 
-	public void tryCreatingDatabase(String database, String user, String password) throws ClassNotFoundException {
+	public void tryAddingDefaultUsers() {
+		PasswordAuthentication pa = new PasswordAuthentication();
+		try {
+			registerUser("admin", "admin", "admin", pa.hash("admin"),
+					User.ADMIN);
+			registerUser("teacher", "teacher", "teacher", pa.hash("teacher"),
+					User.TEACHER);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			// do nothing
+		}
+	}
+
+	public void tryCreatingDatabase(String database, String user,
+			String password) throws ClassNotFoundException {
 		Connection connection = null;
 		Statement statement = null;
 		try {
 			Class.forName("org.postgresql.Driver");
-			connection = DriverManager.getConnection("jdbc:postgresql://localhost/", user, password);
+			connection = DriverManager.getConnection(
+					"jdbc:postgresql://localhost/", user, password);
 			statement = connection.createStatement();
 			String sql = "CREATE DATABASE " + database;
 			statement.executeUpdate(sql);
@@ -130,7 +155,8 @@ public class PostgresDB {
 	}
 
 	// return false if user name exist
-	public boolean registerUser(String fname, String lname, String username, String password_hash) throws SQLException {
+	public boolean registerUser(String fname, String lname, String username,
+			String password_hash, String role) throws SQLException {
 		// check if this username already exists
 		final String queryCheck = "SELECT count(*) from users WHERE username= ?";
 		PreparedStatement ps = mConnect.prepareStatement(queryCheck);
@@ -147,12 +173,13 @@ public class PostgresDB {
 		if (exists) {
 			return false;
 		}
-		final String insertUser = "INSERT INTO users VALUES (default,?,?,?,?,'student')";
+		final String insertUser = "INSERT INTO users VALUES (default,?,?,?,?,?)";
 		ps = mConnect.prepareStatement(insertUser);
 		ps.setString(1, fname);
 		ps.setString(2, lname);
 		ps.setString(3, username);
 		ps.setString(4, password_hash);
+		ps.setString(5, role);
 		ps.executeUpdate();
 		ps.close();
 		return true;
@@ -203,7 +230,8 @@ public class PostgresDB {
 		return role;
 	}
 
-	public int addSubmission(int author_id, String description, InputStream fis_file, InputStream fis_thumbnail)
+	public int addSubmission(int author_id, String description,
+			InputStream fis_file, InputStream fis_thumbnail)
 			throws SQLException, IOException {
 		mConnect.setAutoCommit(false);
 		final String createNewSubmission = "INSERT INTO submissions VALUES (default,?,?,?,?,0,false) RETURNING ID";
@@ -228,10 +256,12 @@ public class PostgresDB {
 
 	private long getOID(InputStream fis_file) throws SQLException, IOException {
 		// Get the Large Object Manager to perform operations with
-		LargeObjectManager lobj = ((org.postgresql.PGConnection) mConnect).getLargeObjectAPI();
+		LargeObjectManager lobj = ((org.postgresql.PGConnection) mConnect)
+				.getLargeObjectAPI();
 
 		// Create a new large object
-		long oid_file = lobj.createLO(LargeObjectManager.READ | LargeObjectManager.WRITE);
+		long oid_file = lobj
+				.createLO(LargeObjectManager.READ | LargeObjectManager.WRITE);
 
 		// Open the large object for writing
 		LargeObject obj = lobj.open(oid_file, LargeObjectManager.WRITE);
@@ -249,7 +279,8 @@ public class PostgresDB {
 	}
 
 	// nothing means deleted or wrong id
-	public Submission getSingleSubmission(int submission_id) throws SQLException {
+	public Submission getSingleSubmission(int submission_id)
+			throws SQLException {
 
 		final String querrySubmission = "SELECT * from submissions WHERE ID = ? AND delete = false";
 		PreparedStatement ps = mConnect.prepareStatement(querrySubmission);
@@ -261,7 +292,8 @@ public class PostgresDB {
 			int author_id = resultSet.getInt("author_id");
 			long file_oid = resultSet.getLong("file");
 			long thumbnail_oid = resultSet.getLong("thumbnail");
-			submission = new Submission(submission_id, description, author_id, file_oid, thumbnail_oid);
+			submission = new Submission(submission_id, description, author_id,
+					file_oid, thumbnail_oid);
 		}
 		ps.close();
 		resultSet.close();
@@ -271,7 +303,8 @@ public class PostgresDB {
 	public byte[] retrievingOIDFile(long oid, int DBID) throws SQLException {
 		mConnect.setAutoCommit(false);
 		// Get the Large Object Manager to perform operations with
-		LargeObjectManager lobj = ((org.postgresql.PGConnection) mConnect).getLargeObjectAPI();
+		LargeObjectManager lobj = ((org.postgresql.PGConnection) mConnect)
+				.getLargeObjectAPI();
 
 		// Open the large object for reading
 		LargeObject obj = lobj.open(oid, LargeObjectManager.READ);
@@ -303,7 +336,8 @@ public class PostgresDB {
 			long file_oid = resultSet.getLong("file");
 			long thumbnail_oid = resultSet.getLong("thumbnail");
 			int DBID = resultSet.getInt("ID");
-			Submission submission = new Submission(DBID, description, author_id, file_oid, thumbnail_oid);
+			Submission submission = new Submission(DBID, description, author_id,
+					file_oid, thumbnail_oid);
 			submissionList.add(submission);
 		}
 		ps.close();
@@ -325,7 +359,8 @@ public class PostgresDB {
 		return count;
 	}
 
-	public void changeGradeForSubmission(int DBID, int grade) throws SQLException {
+	public void changeGradeForSubmission(int DBID, int grade)
+			throws SQLException {
 		final String gradeSubmission = "UPDATE submissions SET grade = ? WHERE ID = ?";
 		PreparedStatement ps = mConnect.prepareStatement(gradeSubmission);
 		ps.setInt(1, grade);
@@ -349,7 +384,8 @@ public class PostgresDB {
 		return grade;
 	}
 
-	public void addACommentForSubmission(int submissionDBID, int userDBID, String comment) throws SQLException {
+	public void addACommentForSubmission(int submissionDBID, int userDBID,
+			String comment) throws SQLException {
 		final String createNewComment = "INSERT INTO comments VALUES (default,?,?,?,?)";
 		PreparedStatement ps = mConnect.prepareStatement(createNewComment);
 		ps.setInt(1, userDBID);
@@ -360,7 +396,8 @@ public class PostgresDB {
 		ps.close();
 	}
 
-	public List<Comment> getCommentsForASubmission(int submissionDBID) throws SQLException {
+	public List<Comment> getCommentsForASubmission(int submissionDBID)
+			throws SQLException {
 		final String querrySubmission = "SELECT u.firstname,c.text,c.time from comments c, users u"
 				+ " WHERE c.submission_id = ? AND c.user_id=u.ID";
 		PreparedStatement ps = mConnect.prepareStatement(querrySubmission);
@@ -379,7 +416,8 @@ public class PostgresDB {
 		return commentList;
 	}
 
-	public int checkCurrentRatingForASubmission(int submissionDBID, int userDBID) throws SQLException {
+	public int checkCurrentRatingForASubmission(int submissionDBID,
+			int userDBID) throws SQLException {
 		final String queryCheck = "SELECT rating from ratings WHERE user_id= ? AND submission_id=?";
 		PreparedStatement ps = mConnect.prepareStatement(queryCheck);
 		ps.setInt(1, userDBID);
@@ -394,7 +432,8 @@ public class PostgresDB {
 		return rating;
 	}
 
-	public void addRatingForSubmission(int submissionDBID, int userDBID, int rating) throws SQLException {
+	public void addRatingForSubmission(int submissionDBID, int userDBID,
+			int rating) throws SQLException {
 		// check if rating exist
 		final String queryCheck = "SELECT ID from ratings WHERE user_id= ? AND submission_id=?";
 		PreparedStatement ps = mConnect.prepareStatement(queryCheck);
@@ -427,8 +466,10 @@ public class PostgresDB {
 		}
 	}
 
-	public float getAVGRatingForASubmission(int submissionDBID) throws SQLException {
-		final String querryRating = "SELECT rating from ratings" + " WHERE submission_id = ?";
+	public float getAVGRatingForASubmission(int submissionDBID)
+			throws SQLException {
+		final String querryRating = "SELECT rating from ratings"
+				+ " WHERE submission_id = ?";
 		PreparedStatement ps = mConnect.prepareStatement(querryRating);
 		ps.setInt(1, submissionDBID);
 		final ResultSet resultSet = ps.executeQuery();
@@ -469,7 +510,8 @@ public class PostgresDB {
 	}
 
 	public float getAVGGradeForAUser(int userDBID) throws SQLException {
-		final String querrySubmission = "SELECT grade from submissions" + " WHERE author_id=?";
+		final String querrySubmission = "SELECT grade from submissions"
+				+ " WHERE author_id=?";
 		PreparedStatement ps = mConnect.prepareStatement(querrySubmission);
 		ps.setInt(1, userDBID);
 		final ResultSet resultSet = ps.executeQuery();
@@ -489,7 +531,8 @@ public class PostgresDB {
 	}
 
 	public int getNumberOfSubmission(int userDBID) throws SQLException {
-		final String querrySubmission = "SELECT count(*) from submissions" + " WHERE author_id=?";
+		final String querrySubmission = "SELECT count(*) from submissions"
+				+ " WHERE author_id=?";
 		PreparedStatement ps = mConnect.prepareStatement(querrySubmission);
 		ps.setInt(1, userDBID);
 		final ResultSet resultSet = ps.executeQuery();
