@@ -141,7 +141,7 @@ public class DetailPageServlet extends HttpServlet {
 	private String getRatingDrpdList(int submissionID, PostgresDB db, int user_id) throws SQLException {
 		int rating = db.checkCurrentRatingForASubmission(submissionID, user_id);
 		StringBuilder dropdownList = new StringBuilder();
-		dropdownList.append("<select name=\"drplistRating\">  onchange=\"this.form.submit()\"");
+		dropdownList.append("<select name=\"drplistRating\" onchange=\"this.form.submit()\">  ");
 		if (rating == -1) {
 			dropdownList.append("<option value=\"-1\">-</option>");
 			for (int i = 1; i < 6; i++) {
