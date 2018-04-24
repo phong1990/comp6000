@@ -3,6 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<<<<<<< HEAD
 <%
 	if (session != null) {
 		User user1 = (User) session.getAttribute("user");
@@ -77,5 +78,58 @@
 		</form>
 	</div>
 	<%@ include file="parts/footer.html"%>
+=======
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Magic Camp</title>
+<script type="text/javascript" src="js/validation.js"></script>
+<link type="text/css" rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+	<header>
+	<div style="float: left; padding-left: 20px">
+		<a href="index.jsp" class="top">Magic Camp</a>
+	</div>
+	<div style="float: right; padding-right: 20px; margin-right: 20px">
+		<a href="register.jsp" class="top">Register</a>
+	</div>
+	<div style="float: right; padding-right: 20px">
+		<a href="login.jsp" class="top">Login</a>
+	</div>
+	</header>
+
+	<div>
+		<form name="loginform" method="POST" action="LoginServlet">
+			<table cellpadding="5" cellspacing="10" align="center" width="600px">
+				<tr>
+					<td colspan="2" align="center"><h3>Login</h3></td>
+				</tr>
+				<tr>
+					<td width="40%" align="right">Username:</td>
+					<td width="60%"><input class="txt" type="text" name="username" required /></td>
+
+				</tr>
+				<tr>
+					<td align="right">Password:</td>
+					<td><input type="password" class="txt" name="password" required /></td>
+
+				</tr>
+				<tr>
+					<td></td>
+					<td><input id="yourBtn" type="submit" value="Login" /></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<%
+							if (request.getParameter("message") != null) {
+								out.println(request.getParameter("message"));
+							}
+						%>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+>>>>>>> refs/remotes/comp6000/master
 </body>
 </html>
