@@ -98,25 +98,24 @@ public class DetailPageServlet extends HttpServlet {
 					} else {
 						// TODO: handle exception
 						message = "You need to choose a submission first";
-						System.out.println(message);
-						request.setAttribute("message", message);
+						request.setAttribute("message", Util.addH3ToText(message));
 						request.getRequestDispatcher("/home.jsp").forward(request, response);
 						
 					}
 				} catch (SQLException e) {
 					String message = "Something is wrong within the DB!";
-					System.out.println(message);
-					request.setAttribute("message", message);
+					request.setAttribute("message",Util.addH3ToText( message));
 					request.getRequestDispatcher("/home.jsp").forward(request, response);
 				}
 			} else {
-
-				out.print("<h3>Please login first</h3>");
+				String message = "Please login first!";
+				request.setAttribute("message", Util.addH3ToText(message));
 				request.getRequestDispatcher("login.jsp").include(request, response);
 			}
 
 		} else {
-			out.print("<h3>Please login first</h3>");
+			String message = "Please login first!";
+			request.setAttribute("message",Util.addH3ToText( message));
 			request.getRequestDispatcher("login.jsp").include(request, response);
 		}
 	}

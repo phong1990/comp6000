@@ -32,26 +32,29 @@ public class Util {
 		});
 		return filePaths;
 	}
-	//Fisher–Yates shuffle array
-	public static void shuffleArray(int[] array)
-	{
-	    int index;
-	    Random random = new Random();
-	    for (int i = array.length - 1; i > 0; i--)
-	    {
-	        index = random.nextInt(i + 1);
-	        if (index != i)
-	        {
-	            array[index] ^= array[i];
-	            array[i] ^= array[index];
-	            array[index] ^= array[i];
-	        }
-	    }
+
+	// Fisher–Yates shuffle array
+	public static void shuffleArray(int[] array) {
+		int index;
+		Random random = new Random();
+		for (int i = array.length - 1; i > 0; i--) {
+			index = random.nextInt(i + 1);
+			if (index != i) {
+				array[index] ^= array[i];
+				array[i] ^= array[index];
+				array[index] ^= array[i];
+			}
+		}
 	}
-	public static String getImageForBrowser(int submissionID, PostgresDB db, Submission sub)
-			throws SQLException, UnsupportedEncodingException {
-		byte[] thumbnail = db.retrievingOIDFile(
-				sub.getThumbnailOID(), submissionID);
+
+	public static String addH3ToText(String text){
+		return "<h3>" + text+"</h3>";
+	}
+
+	public static String getImageForBrowser(int submissionID, PostgresDB db,
+			Submission sub) throws SQLException, UnsupportedEncodingException {
+		byte[] thumbnail = db.retrievingOIDFile(sub.getThumbnailOID(),
+				submissionID);
 		byte[] encodeBase64 = Base64.encodeBase64(thumbnail);
 		String base64Encoded = new String(encodeBase64, "UTF-8");
 		StringBuilder imageString = new StringBuilder();
@@ -61,30 +64,28 @@ public class Util {
 		return image;
 	}
 
-	//Fisher–Yates shuffle array
-	public static void shuffleArray(String[] array)
-	{
-	    int index;
-	    String temp = null;
-	    Random random = new Random();
-	    for (int i = array.length - 1; i > 0; i--)
-	    {
-	        index = random.nextInt(i + 1);
-	        if (index != i)
-	        {
-	             temp = array[index];
-	             array[index] = array[i];
-	             array[i] = temp;
-	        }
-	    }
+	// Fisher–Yates shuffle array
+	public static void shuffleArray(String[] array) {
+		int index;
+		String temp = null;
+		Random random = new Random();
+		for (int i = array.length - 1; i > 0; i--) {
+			index = random.nextInt(i + 1);
+			if (index != i) {
+				temp = array[index];
+				array[index] = array[i];
+				array[i] = temp;
+			}
+		}
 	}
+
 	// uncomment these on release to get the console progress
 	public static void printProgress(double percentage) {
-//		if (percentage == 0)
-//			System.out.print("(Progress) Percent completed:   0.00 %");
-//		else{
-//			System.out.printf("\b\b\b\b\b\b\b\b%3.2f %%", percentage);
-//		}
+		// if (percentage == 0)
+		// System.out.print("(Progress) Percent completed: 0.00 %");
+		// else{
+		// System.out.printf("\b\b\b\b\b\b\b\b%3.2f %%", percentage);
+		// }
 	}
 
 	public static String convertTime(long time) {

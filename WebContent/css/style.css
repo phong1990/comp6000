@@ -4,7 +4,9 @@ body {
 	margin: 0px;
 	overflow: hidden;
 }
-
+h3 {
+    color: red
+}
 header {
 	font-family: "Calibri", cursive, sans-serif;
 	width: 100%;

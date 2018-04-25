@@ -66,11 +66,7 @@
 				<tr>
 					<td></td>
 					<td>
-						<%
-							if (request.getParameter("message") != null) {
-								out.println(request.getParameter("message"));
-							}
-						%>
+						${message}
 					</td>
 				</tr>
 			</table>
