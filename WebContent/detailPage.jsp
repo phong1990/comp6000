@@ -45,7 +45,8 @@
 	${message}
 	<table style="width: 60%">
 		<tr>
-			<td colspan="3"><img src="${thumbnail}" alt="No image" height="200" width="200"></td>
+			<td colspan="3"><img src="${thumbnail}" alt="No image"
+				height="200" width="200"></td>
 		</tr>
 		<tr>
 			<td><h4>Description:</h4></td>
@@ -54,6 +55,14 @@
 		</tr>
 		<tr>
 			<td colspan="3">${description}</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td><form method="post" action="FileDownloadServlet">
+					<input type="hidden" name="submissionid" value="${subid}" /><input
+						type="submit" value="Download">
+				</form></td>
 		</tr>
 
 	</table>
