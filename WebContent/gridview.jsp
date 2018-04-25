@@ -72,7 +72,7 @@
                %>
                <div style="overflow:auto;">
                <table>
-               <form method="post" action="DetailPageServlet">
+               
                <br>
               
                <%
@@ -87,7 +87,7 @@
                         %>
                             <tr>
                             <td><img src="<%=image%>" height="300px" width="300px" alt="Submission"></td>
-                            <td> Description : <a href= detailPage.jsp ? & submissionID=<%=sublist.get(i).getDBID()%>"><%=description %></a></td>
+		            <td> Description : <a href= "DetailPageServlet?submissionID=<%=sublist.get(i).getDBID()%>"><%=description %></a></td>
                             </tr>
                          <br>
                         <%if(role.equals("Admin")){  %>
@@ -106,7 +106,6 @@
                         out.println(e.getMessage());
                         }
                     %>
-    			</form>
                 </table>
            </div>
            <%}
