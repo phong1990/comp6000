@@ -173,6 +173,7 @@ public class PostgresDB {
 		if (exists) {
 			return false;
 		}
+		mConnect.setAutoCommit(false);
 		final String insertUser = "INSERT INTO users VALUES (default,?,?,?,?,?)";
 		ps = mConnect.prepareStatement(insertUser);
 		ps.setString(1, fname);
@@ -182,6 +183,9 @@ public class PostgresDB {
 		ps.setString(5, role);
 		ps.executeUpdate();
 		ps.close();
+		// Finally, commit the transaction.
+		mConnect.commit();
+		mConnect.setAutoCommit(true);
 		return true;
 	}
 
@@ -207,12 +211,16 @@ public class PostgresDB {
 	}
 
 	public void changeRole(int DBID, String role) throws SQLException {
+		mConnect.setAutoCommit(false);
 		final String changeRole = "UPDATE users SET role = ? WHERE ID = ?";
 		PreparedStatement ps = mConnect.prepareStatement(changeRole);
 		ps.setString(1, role);
 		ps.setInt(2, DBID);
 		ps.executeUpdate();
 		ps.close();
+		// Finally, commit the transaction.
+		mConnect.commit();
+		mConnect.setAutoCommit(true);
 	}
 
 	// null if wrong dbID
@@ -245,7 +253,7 @@ public class PostgresDB {
 		if (rs.next()) {
 			ID = rs.getInt(1);
 		} else {
-			throw new SQLException("Creating user failed, no ID obtained.");
+			throw new SQLException("Creating submission failed, no ID obtained.");
 		}
 		ps.close();
 		// Finally, commit the transaction.
@@ -318,11 +326,15 @@ public class PostgresDB {
 	}
 
 	public void deleteSubmission(int DBID) throws SQLException {
+		mConnect.setAutoCommit(false);
 		final String deleteSubmission = "UPDATE submissions SET delete = true WHERE ID = ?";
 		PreparedStatement ps = mConnect.prepareStatement(deleteSubmission);
 		ps.setInt(1, DBID);
 		ps.executeUpdate();
 		ps.close();
+		// Finally, commit the transaction.
+		mConnect.commit();
+		mConnect.setAutoCommit(true);
 	}
 
 	public List<Submission> getAllSubmissions() throws SQLException {
@@ -361,12 +373,17 @@ public class PostgresDB {
 
 	public void changeGradeForSubmission(int DBID, int grade)
 			throws SQLException {
+		mConnect.setAutoCommit(false);
 		final String gradeSubmission = "UPDATE submissions SET grade = ? WHERE ID = ?";
 		PreparedStatement ps = mConnect.prepareStatement(gradeSubmission);
 		ps.setInt(1, grade);
 		ps.setInt(2, DBID);
 		ps.executeUpdate();
 		ps.close();
+
+		// Finally, commit the transaction.
+		mConnect.commit();
+		mConnect.setAutoCommit(true);
 	}
 
 	// return -1 if deleted or wrong dbid
@@ -386,6 +403,7 @@ public class PostgresDB {
 
 	public void addACommentForSubmission(int submissionDBID, int userDBID,
 			String comment) throws SQLException {
+		mConnect.setAutoCommit(false);
 		final String createNewComment = "INSERT INTO comments VALUES (default,?,?,?,?)";
 		PreparedStatement ps = mConnect.prepareStatement(createNewComment);
 		ps.setInt(1, userDBID);
@@ -394,6 +412,9 @@ public class PostgresDB {
 		ps.setLong(4, System.currentTimeMillis());
 		ps.executeUpdate();
 		ps.close();
+		// Finally, commit the transaction.
+		mConnect.commit();
+		mConnect.setAutoCommit(true);
 	}
 
 	public List<Comment> getCommentsForASubmission(int submissionDBID)
@@ -446,6 +467,7 @@ public class PostgresDB {
 		}
 		ps.close();
 		resultSet.close();
+		mConnect.setAutoCommit(false);
 		if (DBID == -1) {
 			// add new rating
 			final String addNewRating = "INSERT INTO ratings VALUES (default,?,?,?)";
@@ -464,6 +486,9 @@ public class PostgresDB {
 			ps.executeUpdate();
 			ps.close();
 		}
+		// Finally, commit the transaction.
+		mConnect.commit();
+		mConnect.setAutoCommit(true);
 	}
 
 	public float getAVGRatingForASubmission(int submissionDBID)
