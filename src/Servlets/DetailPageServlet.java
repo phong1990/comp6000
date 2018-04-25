@@ -73,8 +73,15 @@ public class DetailPageServlet extends HttpServlet {
 					String message = (String) request.getAttribute("message");
 					if (message == null)
 						message = "";
-					if (request.getParameter("submissionID") != null) {
-						int submissionID = Integer.parseInt(request.getParameter("submissionID"));
+					int submissionID = -1;
+					if (request.getParameter("submissionID") != null)
+						submissionID = Integer.parseInt(request.getParameter("submissionID"));
+					else {
+						if (request.getAttribute("submissionID") != null) {
+							submissionID = (int) request.getAttribute("submissionID");
+						}
+					}
+					if (submissionID != -1) {
 						PostgresDB db = PostgresDB.getInstance();
 						Submission sub = db.getSingleSubmission(submissionID);
 						String image = Util.getImageForBrowser(submissionID, db, sub);
@@ -100,11 +107,11 @@ public class DetailPageServlet extends HttpServlet {
 						message = "You need to choose a submission first";
 						request.setAttribute("message", Util.addH3ToText(message));
 						request.getRequestDispatcher("/home.jsp").forward(request, response);
-						
+
 					}
 				} catch (SQLException e) {
 					String message = "Something is wrong within the DB!";
-					request.setAttribute("message",Util.addH3ToText( message));
+					request.setAttribute("message", Util.addH3ToText(message));
 					request.getRequestDispatcher("/home.jsp").forward(request, response);
 				}
 			} else {
@@ -115,7 +122,7 @@ public class DetailPageServlet extends HttpServlet {
 
 		} else {
 			String message = "Please login first!";
-			request.setAttribute("message",Util.addH3ToText( message));
+			request.setAttribute("message", Util.addH3ToText(message));
 			request.getRequestDispatcher("login.jsp").include(request, response);
 		}
 	}

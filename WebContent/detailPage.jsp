@@ -59,7 +59,7 @@
 		<tr>
 			<td></td>
 			<td></td>
-			<td><form method="post" action="FileDownloadServlet">
+			<td><form method="post" action="download">
 					<input type="hidden" name="submissionid" value="${subid}" /><input
 						type="submit" value="Download">
 				</form></td>
