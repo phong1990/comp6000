@@ -73,8 +73,8 @@ public class DetailPageServlet extends HttpServlet {
 					String message = (String) request.getAttribute("message");
 					if (message == null)
 						message = "";
-					if (request.getAttribute("submissionID") != null) {
-						int submissionID = (int) request.getAttribute("submissionID");
+					if (request.getParameter("submissionID") != null) {
+						int submissionID = Integer.parseInt(request.getParameter("submissionID"));
 						PostgresDB db = PostgresDB.getInstance();
 						Submission sub = db.getSingleSubmission(submissionID);
 						String image = Util.getImageForBrowser(submissionID, db, sub);
