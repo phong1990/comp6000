@@ -10,19 +10,19 @@ function validate() {
                 
             }
             else {
-                document.getElementById("msg").innerHTML="Password and confirm password must match.!";
+                document.getElementById("msg").innerHTML="<h3 style=\"color: red\">" +"Password and confirm password must match.!"+"</h3>";
                 str=false;
             }
             
             if(document.signupform.password.value == '')
             {
-                document.getElementById("msg").innerHTML="Enter Password";
+                document.getElementById("msg").innerHTML="<h3 style=\"color: red\">" +"Enter Password"+"</h3>";
                 str=false;
             }
             
             if(document.signupform.username.value == '')
             {
-                document.getElementById("msg").innerHTML="Enter Username";
+                document.getElementById("msg").innerHTML="<h3 style=\"color: red\">" +"Enter Username"+"</h3>";
                 str=false;
             }
             
@@ -32,13 +32,13 @@ function validate() {
             }
             else
             {
-                document.getElementById("msg").innerHTML="Numbers are not allowed for last name.!";
+                document.getElementById("msg").innerHTML="<h3 style=\"color: red\">" +"Numbers are not allowed for last name.!"+"</h3>";
                 str=false;
             }
             
             if(document.signupform.lastname.value == '')
             {
-                document.getElementById("msg").innerHTML="Enter Lastname";
+                document.getElementById("msg").innerHTML="<h3 style=\"color: red\">" +"Enter Lastname"+"</h3>";
                 str=false;
             }
             
@@ -48,13 +48,13 @@ function validate() {
             }
             else
             {
-                document.getElementById("msg").innerHTML="Numbers are not allowed for first name.!";
+                document.getElementById("msg").innerHTML="<h3 style=\"color: red\">" +"Numbers are not allowed for first name.!"+"</h3>";
                 str=false;
             }
         
             if(document.signupform.firstname.value == '')
             {
-                document.getElementById("msg").innerHTML="Enter Firstname";
+                document.getElementById("msg").innerHTML="<h3 style=\"color: red\">" +"Enter Firstname"+"</h3>";
                 str=false;
             }
         return str;       

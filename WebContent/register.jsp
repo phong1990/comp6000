@@ -86,14 +86,10 @@
 			</tr>
 			<tr>
 				<td></td>
-				<td><span id="msg"> </span> <%
- 	if (request.getParameter("message") != null) {
-
- 		out.println(request.getParameter("message"));
- 	}
- %></td>
+				<td><span id="msg"> </span> ${message}</td>
 
 			</tr>
+			
 		</table>
 	</form>
 	<%@ include file="parts/footer.html"%>

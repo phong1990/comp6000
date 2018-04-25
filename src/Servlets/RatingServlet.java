@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import Models.User;
 import Utils.PostgresDB;
+import Utils.Util;
 
 /**
  * Servlet implementation class RatingServlet
@@ -57,7 +58,7 @@ public class RatingServlet extends HttpServlet {
 						} catch (SQLException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-							request.setAttribute("message", "Error: can't rate right now");
+							request.setAttribute("message", Util.addH3ToText("Error: can't rate right now"));
 							request.setAttribute("submissionID", submissionID);
 						}
 					}else{
@@ -74,15 +75,15 @@ public class RatingServlet extends HttpServlet {
 				}
 			} else {
 
-				out.print("<h3>Please login first</h3>");
-				request.getRequestDispatcher("login.jsp").include(request,
-						response);
+				String message = "Please login first!";
+				request.setAttribute("message", Util.addH3ToText(message));
+				request.getRequestDispatcher("login.jsp").include(request, response);
 			}
 
 		} else {
-			out.print("<h3>Please login first</h3>");
-			request.getRequestDispatcher("login.jsp").include(request,
-					response);
+			String message = "Please login first!";
+			request.setAttribute("message", Util.addH3ToText(message));
+			request.getRequestDispatcher("login.jsp").include(request, response);
 		}
 
 	}

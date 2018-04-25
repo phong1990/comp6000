@@ -60,6 +60,9 @@
 			<tr>
 				<td colspan="2"><input type="submit" value="Submit"></td>
 			</tr>
+			<tr>
+				<td colspan="2">${message}</td>
+			</tr>
 		</table>
 	</form>
 	<%@ include file="parts/footer.html"%>

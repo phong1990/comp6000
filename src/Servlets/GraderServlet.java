@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import Models.User;
 import Utils.PostgresDB;
+import Utils.Util;
 
 /**
  * Servlet implementation class GraderServlet
@@ -63,12 +64,12 @@ public class GraderServlet extends HttpServlet {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 							request.setAttribute("message",
-									"Error: can't change grade right now!");
+									Util.addH3ToText("Error: can't change grade right now!"));
 							request.setAttribute("submissionID", submissionID);
 						}
 					} else {
 						request.setAttribute("message",
-								"grade can only be between 0 and 100!");
+								Util.addH3ToText("grade can only be between 0 and 100!"));
 						request.setAttribute("submissionID", submissionID);
 					}
 					RequestDispatcher view = request
@@ -81,15 +82,15 @@ public class GraderServlet extends HttpServlet {
 				}
 			} else {
 
-				out.print("<h3>Please login first</h3>");
-				request.getRequestDispatcher("login.jsp").include(request,
-						response);
+				String message = "Please login first!";
+				request.setAttribute("message", Util.addH3ToText(message));
+				request.getRequestDispatcher("login.jsp").include(request, response);
 			}
 
 		} else {
-			out.print("<h3>Please login first</h3>");
-			request.getRequestDispatcher("login.jsp").include(request,
-					response);
+			String message = "Please login first!";
+			request.setAttribute("message", Util.addH3ToText(message));
+			request.getRequestDispatcher("login.jsp").include(request, response);
 		}
 	}
 

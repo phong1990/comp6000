@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import Models.User;
 import Utils.PasswordAuthentication;
 import Utils.PostgresDB;
+import Utils.Util;
 
 /**
  * Servlet implementation class RegisterServlet
@@ -53,7 +54,7 @@ public class RegisterServlet extends HttpServlet {
 						response);
 			} else {
 				request.setAttribute("message",
-						"Sorry, that username has been taken!");
+						Util.addH3ToText("Sorry, that username has been taken!"));
 				request.getRequestDispatcher("register.jsp").include(request,
 						response);
 			}
@@ -61,7 +62,7 @@ public class RegisterServlet extends HttpServlet {
 			Logger.getLogger(RegisterServlet.class.getName()).log(Level.SEVERE,
 					null, ex);
 			request.setAttribute("message",
-					"Register unsucessful. Database is down!");
+					Util.addH3ToText("Register unsucessful. Database is down!"));
 			request.getRequestDispatcher("register.jsp").include(request,
 					response);
 		}

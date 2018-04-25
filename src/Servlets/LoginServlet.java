@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import Models.User;
 import Utils.PostgresDB;
+import Utils.Util;
 
 /**
  * Servlet implementation class LoginServlet
@@ -46,12 +47,12 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("user", user);  
                 response.sendRedirect("home.jsp");
             } else {
-            	request.setAttribute("message","<h3>Sorry, username or password is not correct!</h3>");
+            	request.setAttribute("message",Util.addH3ToText("Sorry, username or password is not correct!"));
                 request.getRequestDispatcher("login.jsp").include(request, response);
             }
         } catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-        	request.setAttribute("message","<h3>Login unsucessful. The database is down!</h3>");
+        	request.setAttribute("message",Util.addH3ToText("Login unsucessful. The database is down!"));
             request.getRequestDispatcher("login.jsp").include(request, response);
         }
 	}

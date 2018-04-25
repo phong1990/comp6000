@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import Models.User;
 import Utils.PostgresDB;
+import Utils.Util;
 
 /**
  * Servlet implementation class CommentServlet
@@ -57,11 +58,11 @@ public class CommentServlet extends HttpServlet {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 							request.setAttribute("message",
-									"Error: can't comment right now");
+									Util.addH3ToText("Error: can't comment right now"));
 							request.setAttribute("submissionID", submissionID);
 						}
 					} else {
-						request.setAttribute("message", "Comment is empty..");
+						request.setAttribute("message", Util.addH3ToText("Comment is empty.."));
 						request.setAttribute("submissionID", submissionID);
 					}
 					RequestDispatcher view = request
@@ -69,20 +70,21 @@ public class CommentServlet extends HttpServlet {
 					view.forward(request, response);
 
 				} else {
+					
 					out.print(
 							"<h3>You are not supposed to be here, nosey little ...</h3>");
 				}
 			} else {
 
-				out.print("<h3>Please login first</h3>");
-				request.getRequestDispatcher("login.jsp").include(request,
-						response);
+				String message = "Please login first!";
+				request.setAttribute("message", Util.addH3ToText(message));
+				request.getRequestDispatcher("login.jsp").include(request, response);
 			}
 
 		} else {
-			out.print("<h3>Please login first</h3>");
-			request.getRequestDispatcher("login.jsp").include(request,
-					response);
+			String message = "Please login first!";
+			request.setAttribute("message", Util.addH3ToText(message));
+			request.getRequestDispatcher("login.jsp").include(request, response);
 		}
 	}
 

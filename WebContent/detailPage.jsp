@@ -42,7 +42,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h3>${message}</h3>
+	${message}
 	<table style="width: 60%">
 		<tr>
 			<td colspan="3"><img src="${thumbnail}" alt="No image" height="200" width="200"></td>

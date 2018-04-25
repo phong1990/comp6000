@@ -48,7 +48,7 @@ public class Util {
 	}
 
 	public static String addH3ToText(String text){
-		return "<h3>" + text+"</h3>";
+		return "<h3 style=\"color: red\">" + text+"</h3>";
 	}
 
 	public static String getImageForBrowser(int submissionID, PostgresDB db,
