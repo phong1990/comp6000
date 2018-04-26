@@ -58,7 +58,7 @@
 				<td><input type="file" name="file" size="50" /></td>
 			</tr>
 			<tr>
-				<td colspan="2"><input type="submit" value="Submit"></td>
+				<td colspan="2"><input type="submit"  value="Submit"></td>
 			</tr>
 			<tr>
 				<td colspan="2">${message}</td>

@@ -45,6 +45,7 @@
 	${message}
 	<div class="DivWithScroll">
 		<table class="detailTable">
+			${adminForm}
 			<tr>
 				<td colspan="3"><img src="${thumbnail}" alt="No image"
 					height="200" width="200"></td>
@@ -74,7 +75,7 @@
 				<td>${dropdownList}</td>
 			</tr>
 			</form>
-			${teacherForm} 
+			${teacherForm}
 		</table>
 		<form method="post" action="CommentServlet">
 			<table class="detailTable">
@@ -92,7 +93,7 @@
 				<tr>
 					<td></td>
 					<td></td>
-					<td><input type="submit" value="Submit Comment"></td>
+					<td><input type="submit" id="yourBtn" value="Submit Comment"></td>
 				</tr>
 			</table>
 		</form>

@@ -92,7 +92,10 @@ public class DetailPageServlet extends HttpServlet {
 						String teacherForm = getTeacherForm(submissionID, db, user);
 						List<Comment> commentList = db.getCommentsForASubmission(submissionID);
 						Collections.sort(commentList);
+						
+						String adminForm = getAdminForm(submissionID, db, user);
 						// set the attributes
+						request.setAttribute("adminForm", adminForm);
 						request.setAttribute("subid", submissionID);
 						request.setAttribute("message", message);
 						request.setAttribute("commentList", commentList);
@@ -143,7 +146,20 @@ public class DetailPageServlet extends HttpServlet {
 		}
 		return teacherForm.toString();
 	}
-
+	private String getAdminForm(int submissionID, PostgresDB db, User user) throws SQLException {
+		String role = user.getRole();
+		StringBuilder teacherForm = new StringBuilder();
+		if (role.equals(User.ADMIN)) {
+			teacherForm.append("<tr>");
+			teacherForm.append("			<form method=\"post\" action=\"DeleteServlet\">");
+			teacherForm.append("				<td><input type=\"hidden\" name=\"submissionid\" value=\"")
+					.append(submissionID).append("\" /><input type=\"submit\" value=\"Delete Submission\"></td>");
+			teacherForm.append("				<td></td>");
+			teacherForm.append("				<td></td>");
+			teacherForm.append("			</form>" + "		</tr>");
+		}
+		return teacherForm.toString();
+	}
 	private String getRatingDrpdList(int submissionID, PostgresDB db, int user_id) throws SQLException {
 		int rating = db.checkCurrentRatingForASubmission(submissionID, user_id);
 		StringBuilder dropdownList = new StringBuilder();
