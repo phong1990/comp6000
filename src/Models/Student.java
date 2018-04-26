@@ -13,10 +13,6 @@ public class Student extends User {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void submit(String description, InputStream fis_file,
-			InputStream fis_thumbnail) throws SQLException, IOException {
-		PostgresDB.getInstance().addSubmission(DBID, description, fis_file,
-				fis_thumbnail);
-	}
+
 
 }

@@ -36,8 +36,9 @@ public class PostgresDB {
 	public static final String CREATE_TABLE_SUBMISSIONS = "CREATE TABLE submissions("
 			+ "   ID SERIAL PRIMARY KEY NOT NULL,"
 			+ "   author_id     INT references users(ID)," + "   file      oid,"
-			+ "   description   TEXT," + "   thumbnail     oid,"
-			+ "   grade         INT," + "   delete        boolean" + ");";
+			+ "file_name     TEXT," + "   description   TEXT,"
+			+ "   thumbnail     oid," + "   grade         INT,"
+			+ "   delete        boolean" + ");";
 
 	public static final String CREATE_TABLE_COMMENTS = "CREATE TABLE comments("
 			+ "   ID SERIAL PRIMARY KEY NOT NULL,"
@@ -239,21 +240,23 @@ public class PostgresDB {
 	}
 
 	public int addSubmission(int author_id, String description,
-			InputStream fis_file, InputStream fis_thumbnail)
+			InputStream fis_file, InputStream fis_thumbnail, String fileName)
 			throws SQLException, IOException {
 		mConnect.setAutoCommit(false);
-		final String createNewSubmission = "INSERT INTO submissions VALUES (default,?,?,?,?,0,false) RETURNING ID";
+		final String createNewSubmission = "INSERT INTO submissions VALUES (default,?,?,?,?,?,0,false) RETURNING ID";
 		PreparedStatement ps = mConnect.prepareStatement(createNewSubmission);
 		ps.setInt(1, author_id);
 		ps.setLong(2, getOID(fis_file));
-		ps.setString(3, description);
-		ps.setLong(4, getOID(fis_thumbnail));
+		ps.setString(3, fileName);
+		ps.setString(4, description);
+		ps.setLong(5, getOID(fis_thumbnail));
 		ResultSet rs = ps.executeQuery();
 		int ID = 0;
 		if (rs.next()) {
 			ID = rs.getInt(1);
 		} else {
-			throw new SQLException("Creating submission failed, no ID obtained.");
+			throw new SQLException(
+					"Creating submission failed, no ID obtained.");
 		}
 		ps.close();
 		// Finally, commit the transaction.
@@ -300,8 +303,9 @@ public class PostgresDB {
 			int author_id = resultSet.getInt("author_id");
 			long file_oid = resultSet.getLong("file");
 			long thumbnail_oid = resultSet.getLong("thumbnail");
+			String fileName = resultSet.getString("file_name");
 			submission = new Submission(submission_id, description, author_id,
-					file_oid, thumbnail_oid);
+					file_oid, thumbnail_oid, fileName);
 		}
 		ps.close();
 		resultSet.close();
@@ -348,8 +352,9 @@ public class PostgresDB {
 			long file_oid = resultSet.getLong("file");
 			long thumbnail_oid = resultSet.getLong("thumbnail");
 			int DBID = resultSet.getInt("ID");
+			String fileName = resultSet.getString("file_name");
 			Submission submission = new Submission(DBID, description, author_id,
-					file_oid, thumbnail_oid);
+					file_oid, thumbnail_oid, fileName);
 			submissionList.add(submission);
 		}
 		ps.close();

@@ -62,7 +62,7 @@ public class download extends HttpServlet {
 						System.out.println("fileLength = " + fileLength);
 						ServletContext context = getServletContext();
 						// sets MIME type for the file download
-						String mimeType = context.getMimeType("file.mab");
+						String mimeType = context.getMimeType(sub.getFileName());
 						if (mimeType == null) {
 							mimeType = "application/octet-stream";
 						}
@@ -70,7 +70,7 @@ public class download extends HttpServlet {
 						response.setContentType(mimeType);
 						response.setContentLength(fileLength);
 						String headerKey = "Content-Disposition";
-						String headerValue = String.format("attachment; filename=\"%s\"", "file.mab");
+						String headerValue = String.format("attachment; filename=\"%s\"", sub.getFileName());
 						response.setHeader(headerKey, headerValue);
 						// writes the file to the client
 						OutputStream outStream = response.getOutputStream();

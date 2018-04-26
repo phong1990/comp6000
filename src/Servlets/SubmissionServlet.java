@@ -3,6 +3,7 @@ package Servlets;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -83,8 +84,10 @@ public class SubmissionServlet extends HttpServlet {
 						inputStream_file = filePart.getInputStream();
 						int submissionID = PostgresDB.getInstance()
 								.addSubmission(user.getDBID(), description,
-										inputStream_file,
-										inputStream_thumbnail);
+										inputStream_file, inputStream_thumbnail,
+										Paths.get(
+												filePart.getSubmittedFileName())
+												.getFileName().toString());
 
 						String message = "";
 						if (submissionID > 0) {
