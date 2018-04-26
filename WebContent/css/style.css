@@ -67,7 +67,7 @@ input:focus {
 }
 
 .left {
-	height: 110px;
+	height: 105px;
 	background: #354778;
 	padding: 20px;
 	color: white;
@@ -101,4 +101,23 @@ input:focus {
 #rightalignment {
 	float: right;
 	padding-top: 20px;
+}
+
+.DivWithScroll{
+	width: 100%;
+	height: 700px;
+    overflow:auto;
+    overflow-x:hidden;
+}
+.firstLine{
+    border-bottom: 2px solid #808080;
+}
+.comments{
+    width: 40%;
+    padding-left: 5%;
+}
+.detailTable{
+    height:200px;
+    width: 30%;
+    padding-left: 5%;
 }

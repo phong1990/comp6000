@@ -47,7 +47,7 @@
 		<table>
 			<tr>
 				<td>Description:</td>
-				<td><input type="text" name="description" size="200" /></td>
+				<td><textarea rows="4" cols="70" name="description">Enter description here...</textarea></td>
 			</tr>
 			<tr>
 				<td>Thumbnail Photo:</td>

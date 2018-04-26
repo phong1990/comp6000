@@ -132,14 +132,14 @@ public class DetailPageServlet extends HttpServlet {
 		StringBuilder teacherForm = new StringBuilder();
 		if (role.equals(User.TEACHER)) {
 			int grade = db.getGradeForSubmission(submissionID);
-			teacherForm.append("<table style=\"width: 60%\"><tr>");
+			teacherForm.append("<tr>");
 			teacherForm.append("			<form method=\"post\" action=\"GraderServlet\">");
 			teacherForm.append("				<td>Grade:<input type=\"hidden\" name=\"submissionid\" value=\"")
 					.append(submissionID).append("\" /></td>");
 			teacherForm.append("				<td><input type=\"text\" name=\"grade\" size=\"15\" value=\"")
 					.append(grade).append("\" />/100</td>");
 			teacherForm.append("				<td><input type=\"submit\" value=\"Change Grade\"></td>");
-			teacherForm.append("			</form>" + "		</tr></table>");
+			teacherForm.append("			</form>" + "		</tr>");
 		}
 		return teacherForm.toString();
 	}

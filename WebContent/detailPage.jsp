@@ -43,77 +43,75 @@
 </head>
 <body>
 	${message}
-	<table style="width: 60%">
-		<tr>
-			<td colspan="3"><img src="${thumbnail}" alt="No image"
-				height="200" width="200"></td>
-		</tr>
-		<tr>
-			<td><h4>Description:</h4></td>
-			<td></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td colspan="3">${description}</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td></td>
-			<td><form method="post" action="download">
-					<input type="hidden" name="submissionid" value="${subid}" /><input
-						type="submit" value="Download">
-				</form></td>
-		</tr>
+	<div class="DivWithScroll">
+		<table class="detailTable">
+			<tr>
+				<td colspan="3"><img src="${thumbnail}" alt="No image"
+					height="200" width="200"></td>
+			</tr>
+			<tr>
+				<td><h4>Description:</h4></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="3">${description}</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+				<td><form method="post" action="download">
+						<input type="hidden" name="submissionid" value="${subid}" /><input
+							type="submit" value="Download">
+					</form></td>
+			</tr>
 
-	</table>
-	<br></br>
-	<form method="post" action="RatingServlet">
-		<table style="width: 60%">
+			<form method="post" action="RatingServlet">
 			<tr>
 				<td>Average Rating:<input type="hidden" name="submissionid"
 					value="${subid}" /></td>
 				<td>${avgrating}</td>
 				<td>${dropdownList}</td>
 			</tr>
+			</form>
+			${teacherForm} 
 		</table>
-	</form>
-	${teacherForm}
-	<br></br>
-	<form method="post" action="CommentServlet">
-		<table>
+		<form method="post" action="CommentServlet">
+			<table class="detailTable">
+				<tr>
+					<td><h4>
+							Leave your comment here:<input type="hidden" name="submissionid"
+								value="${subid}" />
+						</h4></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td colspan="3"><textarea rows="4" cols="70" name="comment">Enter comment here...</textarea></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td><input type="submit" value="Submit Comment"></td>
+				</tr>
+			</table>
+		</form>
+		<br></br>
+		<table class="comments">
 			<tr>
-				<td><h4>
-						Leave your comment here:<input type="hidden" name="submissionid"
-							value="${subid}" />
-					</h4></td>
+				<td><h4>Comments</h4></td>
 				<td></td>
 				<td></td>
 			</tr>
-			<tr>
-				<td colspan="3"><input type="text" name="comment" size="200" /></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td></td>
-				<td><input type="submit" value="Submit Comment"></td>
-			</tr>
+			<c:forEach items="${commentList}" var="comment">
+				<tr>
+					<td colspan="3" class="firstLine">"${comment.text}"<br>
+						<h5>${comment.fname}</h5></td>
+				</tr>
+			</c:forEach>
 		</table>
-	</form>
-	<br></br>
-	<table>
-		<tr>
-			<td><h4>Comments</h4></td>
-			<td></td>
-			<td></td>
-		</tr>
-		<c:forEach items="${commentList}" var="comment">
-			<tr>
-				<td colspan="3">"${comment.text}"<br>
-					<h5>${comment.fname}</h5></td>
-			</tr>
-			<hr />
-		</c:forEach>
-	</table>
+	</div>
+
 	<%@ include file="parts/footer.html"%>
 </body>
 </html>
