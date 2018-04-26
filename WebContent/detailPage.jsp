@@ -48,7 +48,7 @@
 			${adminForm}
 			<tr>
 				<td colspan="3"><img src="${thumbnail}" alt="No image"
-					height="200" width="200"></td>
+					height="400" width="400"></td>
 			</tr>
 			<tr>
 				<td><h4>Description:</h4></td>
@@ -76,6 +76,7 @@
 			</tr>
 			</form>
 			${teacherForm}
+			${studentGrade}
 		</table>
 		<form method="post" action="CommentServlet">
 			<table class="detailTable">

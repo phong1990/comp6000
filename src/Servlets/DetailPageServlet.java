@@ -57,8 +57,8 @@ public class DetailPageServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 
 		response.setContentType("text/html;charset=UTF-8");
@@ -75,26 +75,36 @@ public class DetailPageServlet extends HttpServlet {
 						message = "";
 					int submissionID = -1;
 					if (request.getParameter("submissionID") != null)
-						submissionID = Integer.parseInt(request.getParameter("submissionID"));
+						submissionID = Integer
+								.parseInt(request.getParameter("submissionID"));
 					else {
 						if (request.getAttribute("submissionID") != null) {
-							submissionID = (int) request.getAttribute("submissionID");
+							submissionID = (int) request
+									.getAttribute("submissionID");
 						}
 					}
 					if (submissionID != -1) {
 						PostgresDB db = PostgresDB.getInstance();
 						Submission sub = db.getSingleSubmission(submissionID);
-						String image = Util.getImageForBrowser(submissionID, db, sub);
-						float avgrating = (float) Util.round(db.getAVGRatingForASubmission(submissionID), 1);
+						String image = Util.getImageForBrowser(submissionID, db,
+								sub);
+						float avgrating = (float) Util.round(
+								db.getAVGRatingForASubmission(submissionID), 1);
 						int user_id = user.getDBID();
-						String dropdownList = getRatingDrpdList(submissionID, db, user_id);
+						String dropdownList = getRatingDrpdList(submissionID,
+								db, user_id, sub.getAuthorID());
 
-						String teacherForm = getTeacherForm(submissionID, db, user);
-						List<Comment> commentList = db.getCommentsForASubmission(submissionID);
+						String teacherForm = getTeacherForm(submissionID, db,
+								user);
+						String studentOwnGrade = getStudentOwnGrade(sub, db,
+								user);
+						List<Comment> commentList = db
+								.getCommentsForASubmission(submissionID);
 						Collections.sort(commentList);
-						
+
 						String adminForm = getAdminForm(submissionID, db, user);
 						// set the attributes
+						request.setAttribute("studentGrade", studentOwnGrade);
 						request.setAttribute("adminForm", adminForm);
 						request.setAttribute("subid", submissionID);
 						request.setAttribute("message", message);
@@ -102,83 +112,125 @@ public class DetailPageServlet extends HttpServlet {
 						request.setAttribute("teacherForm", teacherForm);
 						request.setAttribute("dropdownList", dropdownList);
 						request.setAttribute("thumbnail", image);
-						request.setAttribute("description", sub.getDescription());
+						request.setAttribute("description",
+								sub.getDescription());
 						request.setAttribute("avgrating", avgrating);
-						request.getRequestDispatcher("detailPage.jsp").include(request, response);
+						request.getRequestDispatcher("detailPage.jsp")
+								.include(request, response);
 					} else {
 						// TODO: handle exception
 						message = "You need to choose a submission first";
-						request.setAttribute("message", Util.addH3ToText(message));
-						request.getRequestDispatcher("/home.jsp").forward(request, response);
+						request.setAttribute("message",
+								Util.addH3ToText(message));
+						request.getRequestDispatcher("/home.jsp")
+								.forward(request, response);
 
 					}
 				} catch (SQLException e) {
 					String message = "Something is wrong within the DB!";
 					request.setAttribute("message", Util.addH3ToText(message));
-					request.getRequestDispatcher("/home.jsp").forward(request, response);
+					request.getRequestDispatcher("/home.jsp").forward(request,
+							response);
 				}
 			} else {
 				String message = "Please login first!";
 				request.setAttribute("message", Util.addH3ToText(message));
-				request.getRequestDispatcher("login.jsp").include(request, response);
+				request.getRequestDispatcher("login.jsp").include(request,
+						response);
 			}
 
 		} else {
 			String message = "Please login first!";
 			request.setAttribute("message", Util.addH3ToText(message));
-			request.getRequestDispatcher("login.jsp").include(request, response);
+			request.getRequestDispatcher("login.jsp").include(request,
+					response);
 		}
 	}
 
-	private String getTeacherForm(int submissionID, PostgresDB db, User user) throws SQLException {
+	private String getStudentOwnGrade(Submission sub, PostgresDB db, User user)
+			throws SQLException {
+		StringBuilder teacherForm = new StringBuilder();
+		if (sub.getAuthorID() == user.getDBID()) {
+			int grade = db.getGradeForSubmission(sub.getDBID());
+			teacherForm.append("<tr>");
+			teacherForm.append(
+					"			<form method=\"post\" action=\"GraderServlet\">");
+			teacherForm.append("				<td>Grade:</td>");
+			teacherForm.append("				<td>" + grade + "/100</td>");
+			teacherForm.append("				<td></td>");
+			teacherForm.append("			</form>" + "		</tr>");
+		}
+		return teacherForm.toString();
+	}
+
+	private String getTeacherForm(int submissionID, PostgresDB db, User user)
+			throws SQLException {
 		String role = user.getRole();
 		StringBuilder teacherForm = new StringBuilder();
 		if (role.equals(User.TEACHER)) {
 			int grade = db.getGradeForSubmission(submissionID);
 			teacherForm.append("<tr>");
-			teacherForm.append("			<form method=\"post\" action=\"GraderServlet\">");
-			teacherForm.append("				<td>Grade:<input type=\"hidden\" name=\"submissionid\" value=\"")
+			teacherForm.append(
+					"			<form method=\"post\" action=\"GraderServlet\">");
+			teacherForm
+					.append("				<td>Grade:<input type=\"hidden\" name=\"submissionid\" value=\"")
 					.append(submissionID).append("\" /></td>");
-			teacherForm.append("				<td><input type=\"text\" name=\"grade\" size=\"15\" value=\"")
+			teacherForm
+					.append("				<td><input type=\"text\" name=\"grade\" size=\"15\" value=\"")
 					.append(grade).append("\" />/100</td>");
-			teacherForm.append("				<td><input type=\"submit\" value=\"Change Grade\"></td>");
+			teacherForm.append(
+					"				<td><input type=\"submit\" value=\"Change Grade\"></td>");
 			teacherForm.append("			</form>" + "		</tr>");
 		}
 		return teacherForm.toString();
 	}
-	private String getAdminForm(int submissionID, PostgresDB db, User user) throws SQLException {
+
+	private String getAdminForm(int submissionID, PostgresDB db, User user)
+			throws SQLException {
 		String role = user.getRole();
 		StringBuilder teacherForm = new StringBuilder();
 		if (role.equals(User.ADMIN)) {
 			teacherForm.append("<tr>");
-			teacherForm.append("			<form method=\"post\" action=\"DeleteServlet\">");
-			teacherForm.append("				<td><input type=\"hidden\" name=\"submissionid\" value=\"")
-					.append(submissionID).append("\" /><input type=\"submit\" value=\"Delete Submission\"></td>");
+			teacherForm.append(
+					"			<form method=\"post\" action=\"DeleteServlet\">");
+			teacherForm
+					.append("				<td><input type=\"hidden\" name=\"submissionid\" value=\"")
+					.append(submissionID)
+					.append("\" /><input type=\"submit\" value=\"Delete Submission\"></td>");
 			teacherForm.append("				<td></td>");
 			teacherForm.append("				<td></td>");
 			teacherForm.append("			</form>" + "		</tr>");
 		}
 		return teacherForm.toString();
 	}
-	private String getRatingDrpdList(int submissionID, PostgresDB db, int user_id) throws SQLException {
+
+	private String getRatingDrpdList(int submissionID, PostgresDB db,
+			int user_id, int authorID) throws SQLException {
 		int rating = db.checkCurrentRatingForASubmission(submissionID, user_id);
 		StringBuilder dropdownList = new StringBuilder();
-		dropdownList.append("<select name=\"drplistRating\" onchange=\"this.form.submit()\">  ");
-		if (rating == -1) {
-			dropdownList.append("<option value=\"-1\">-</option>");
-			for (int i = 1; i < 6; i++) {
-				dropdownList.append("<option value=\"").append(i).append("\">").append(i).append(" star(s)</option>");
-			}
-		} else {
-			dropdownList.append("<option value=\"").append(rating).append("\">").append(rating)
-					.append(" star(s)</option>");
-			for (int i = 1; i < 6; i++) {
-				if (i != rating)
-					dropdownList.append("<option value=\"").append(i).append("\">").append(i)
+		if (user_id != authorID) {
+			dropdownList.append(
+					"<select name=\"drplistRating\" onchange=\"this.form.submit()\">  ");
+			if (rating == -1) {
+				dropdownList.append("<option value=\"-1\">-</option>");
+				for (int i = 1; i < 6; i++) {
+					dropdownList.append("<option value=\"").append(i)
+							.append("\">").append(i)
 							.append(" star(s)</option>");
+				}
+			} else {
+				dropdownList.append("<option value=\"").append(rating)
+						.append("\">").append(rating)
+						.append(" star(s)</option>");
+				for (int i = 1; i < 6; i++) {
+					if (i != rating)
+						dropdownList.append("<option value=\"").append(i)
+								.append("\">").append(i)
+								.append(" star(s)</option>");
+				}
 			}
+			dropdownList.append("</select>");
 		}
-		dropdownList.append("</select>");
 		return dropdownList.toString();
 	}
 
@@ -186,8 +238,8 @@ public class DetailPageServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

@@ -29,6 +29,10 @@ public class Submission {
 		thumbnailOID = thumbnail_oid;
 	}
 
+	public int getAuthorID() {
+		return authorID;
+	}
+
 	public int getGrade() throws SQLException {
 		return PostgresDB.getInstance().getGradeForSubmission(DBID);
 	}
