@@ -34,7 +34,6 @@
 <%
 	break;
 			}
-
 		} else {
 %>
 <%@ include file="parts/header1.html"%>
@@ -49,12 +48,23 @@
 %>
 
     <head>
+    <style>
+    .submission tr {
+ 					display: block;
+ 					border: 1px solid blue;
+					}
+	.submission td{
+    				border: 1px solid red;
+    				padding: 20px;
+					}
+    
+    </style>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="css/style.css" />
         <title>Main Page</title>
     </head>
     
-    <body>
+    <body style="overflow:scroll">
     
         <article>
         <%
@@ -70,8 +80,8 @@
                
                List<Submission> sublist = db.getAllSubmissions();
                %>
-               <div style="overflow:auto;">
-               <table>
+
+               <table class="submission" align="center" >
                
                <br>
               
@@ -86,8 +96,12 @@
                     else{
                         %>
                             <tr>
-                            <td><img src="<%=image%>" height="300px" width="300px" alt="Submission"></td>
-		            <td> Description : <a href= "DetailPageServlet?submissionID=<%=sublist.get(i).getDBID()%>"><%=description %></a></td>
+                            <td>
+                            <a href= "DetailPageServlet?submissionID=<%=sublist.get(i).getDBID()%>">
+                            <img src="<%=image%>" height="300px" width="300px" alt="Submission">
+                            </a>
+                            </td>
+		            		<td> Description : <a href= "DetailPageServlet?submissionID=<%=sublist.get(i).getDBID()%>"><%=description %></a></td>
                             </tr>
                          <br>
                         <%if(role.equals("Admin")){  %>
@@ -107,7 +121,7 @@
                         }
                     %>
                 </table>
-           </div>
+
            <%}
 %>
            
