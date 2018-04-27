@@ -138,8 +138,8 @@
                 	  <div class ="content">
                 	  
                 	  <p style="color: white">Description : <%=description1 %></p>
-                	  <%if(role.equalsIgnoreCase("admin")){ %>
-                	  <a href= "DeleteServlet?submissionID=<%=subID%>">
+                	  <%if(role.equalsIgnoreCase(User.ADMIN)){ %>
+                	  <a href= "DeleteServlet?submissionid=<%=subID%>">
                 	  <p style="color: white">Delete</p>
                 	  </a>
                 	  <%}
