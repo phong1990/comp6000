@@ -53,11 +53,13 @@
     <style>
      .submissionColumn {
  					float: left;
- 					width: 33.33%;
- 					padding: 5px;
+ 					width: 25%;
+ 					padding-right: 40px;
+    				padding-left: 40px;
+    				padding-top: 25px;
  					position: relative;
  					margin: 0 auto;
- 					max-width: 800px;
+ 				
 					}
 					
 	.submissionColumn .content{
@@ -65,13 +67,14 @@
 					bottom:0;
 					background: rgba(0,0,0,0.5);
 					color: #f1f1f1;
-					width: 90%;
+					width: 73%;
 					padding: 20px;
 					}
 	.submissionRow::after{
     				content: "";
     				clear: both;
     				display: table;
+    				width: 100%;
 					}
     
     </style>
@@ -112,10 +115,13 @@
                   String image1;
                   String description1;   
                   int subID;
+                  PostgresDB pd = PostgresDB.getInstance();
+                  float avgRating;
                   for(int j=0; j<imageList.size(); j++){
                 	  image1 = imageList.get(j).getImage();
                 	  description1 = imageList.get(j).getDescription();
                 	  subID = imageList.get(j).getSubID();
+                	  avgRating = (float) Util.round(db.getAVGRatingForASubmission(subID), 1);
                 	  if(count >= 3){
                 		  count = 0; //reset counter after 3 images in row
                 	      }
@@ -131,13 +137,20 @@
                 	  </a>
                 	  <div class ="content">
                 	  
-                	  <p style="color: white"><%=description1 %></p>
-                	  
+                	  <p style="color: white">Description : <%=description1 %></p>
+                	  <%if(role.equalsIgnoreCase("admin")){ %>
+                	  <a href= "DeleteServlet?submissionID=<%=subID%>">
+                	  <p style="color: white">Delete</p>
+                	  </a>
+                	  <%}
+                	  else{%>
+                	  <p style="color: white">Rating : <%=avgRating %></p>
+                	  <%} %>
                 	  </div>
                 	  </div>
                 	 <% 
                 	 count++;
-                	 if(count == 0){
+                	 if(count == 3){
                		  %>
                		  </div>
                		  <%
