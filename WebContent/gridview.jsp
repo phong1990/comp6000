@@ -1,3 +1,5 @@
+<%@page import="Models.ImageSubmission"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page import="Utils.Util"%>
 <%@page import="Utils.PostgresDB"%>
@@ -49,13 +51,27 @@
 
     <head>
     <style>
-    .submission tr {
- 					display: block;
- 					border: 1px solid blue;
+     .submissionColumn {
+ 					float: left;
+ 					width: 33.33%;
+ 					padding: 5px;
+ 					position: relative;
+ 					margin: 0 auto;
+ 					max-width: 800px;
 					}
-	.submission td{
-    				border: 1px solid red;
-    				padding: 20px;
+					
+	.submissionColumn .content{
+					position:absolute;
+					bottom:0;
+					background: rgba(0,0,0,0.5);
+					color: #f1f1f1;
+					width: 90%;
+					padding: 20px;
+					}
+	.submissionRow::after{
+    				content: "";
+    				clear: both;
+    				display: table;
 					}
     
     </style>
@@ -73,20 +89,11 @@
                 PostgresDB db = PostgresDB.getInstance();
                 String role = "Guest";
                 role = user.getRole();
-                if(role.equals("Student")){ %>
                 
-           <%} 
-           else{
-               
-               List<Submission> sublist = db.getAllSubmissions();
-               %>
-
-               <table class="submission" align="center" >
-               
-               <br>
-              
-               <%
-               for(int i=0; i<sublist.size(); i++){
+                List<Submission> sublist = db.getAllSubmissions();
+                List<ImageSubmission> imageList = new ArrayList<ImageSubmission>();
+                 
+                for(int i=0; i<sublist.size(); i++){
                     String image = Util.getImageForBrowser(sublist.get(i).getDBID(), db, sublist.get(i));  
                     String description = sublist.get(i).getDescription();
                     if(image.equals(null))
@@ -94,33 +101,55 @@
                                 response.setStatus(response.SC_NOT_FOUND);
                                 }
                     else{
-                        %>
-                            <tr>
-                            <td>
-                            <a href= "DetailPageServlet?submissionID=<%=sublist.get(i).getDBID()%>">
-                            <img src="<%=image%>" height="300px" width="300px" alt="Submission">
-                            </a>
-                            </td>
-		            		<td> Description : <a href= "DetailPageServlet?submissionID=<%=sublist.get(i).getDBID()%>"><%=description %></a></td>
-                            </tr>
-                         <br>
-                        <%if(role.equals("Admin")){  %>
-                                <tr>
-                                <td><input type="button" value="View"/></td>
-                                <td><input type="button" value="Delete"/></td>                                                        
-                                </tr>
-                            <%
-                                                }
-                                        }
-                                } 
+                    	ImageSubmission is = new ImageSubmission();
+                    	is.setDescription(description);
+                    	is.setImage(image);
+                    	is.setSubID(sublist.get(i).getDBID());
+                    	imageList.add(i, is);	
                         }
-            }
+                 }
+                  int count =0; 
+                  String image1;
+                  String description1;   
+                  int subID;
+                  for(int j=0; j<imageList.size(); j++){
+                	  image1 = imageList.get(j).getImage();
+                	  description1 = imageList.get(j).getDescription();
+                	  subID = imageList.get(j).getSubID();
+                	  if(count >= 3){
+                		  count = 0; //reset counter after 3 images in row
+                	      }
+                	  if(count == 0){
+                		  %>
+                		  <div class = "submissionRow">
+                		  <%
+                	      }
+                	  %>
+                	  <div class = "submissionColumn">
+                	  <a href= "DetailPageServlet?submissionID=<%=subID%>">
+                	  <img src= "<%=image1 %>" alt="Submission" style="width:100%">
+                	  </a>
+                	  <div class ="content">
+                	  
+                	  <p style="color: white"><%=description1 %></p>
+                	  
+                	  </div>
+                	  </div>
+                	 <% 
+                	 count++;
+                	 if(count == 0){
+               		  %>
+               		  </div>
+               		  <%
+               	      }
+                    }
+                  }
                     catch(Exception e)
                         {
                         out.println(e.getMessage());
                         }
                     %>
-                </table>
+        
 
            <%}
 %>
